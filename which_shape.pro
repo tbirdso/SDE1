@@ -5,6 +5,13 @@
 	Due:	Feb 28th
 */
 
+/* Basic Fact */
+
+up("u").
+left("l").
+right("r").
+down("d").
+
 
 /* Predicates */
 
@@ -30,7 +37,7 @@ uA(Length,[SH|ST],Leftover) :-
 	Parse string for sequence of "r" and if succeeds indicates length
 */
 
-rA(L,[],A) :- L is 0.
+rA(L,Leftover,Leftover) :- L is 0.
 
 rA(L,[LH|LT],A) :-
 	rA(Ll,LT,A),
@@ -42,7 +49,7 @@ rA(L,[LH|LT],A) :-
 	Parse string for sequence of "d" and if succeeds indicates length
 */
 
-dA(L,[],A) :- L is 0.
+dA(L,Leftover,Leftover) :- L is 0.
 
 dA(L,[LH,LT],A) :-
 	dA(Ll,LT,A),
@@ -54,7 +61,7 @@ dA(L,[LH,LT],A) :-
 	Parse string for sequence of "l" and if succeeds indicates length
 */
 
-lA(L,[],A) :- L is 0.
+lA(L,Leftover,Leftover) :- L is 0.
 
 lA(L,[LH|LT],A) :-
 	lA(Ll,LT,A),
@@ -68,37 +75,66 @@ lA(L,[LH|LT],A) :-
 
 sq(Leftover,Leftover).
 
-sq([LH,LT],Leftover) :-
-	LH == "u",
+sq(Str,Leftover) :-
+	up(Prev),
+	nextClockwise(Prev,Next),
+	sqRecurse(Length,Prev,Next,Str,Leftover).
 	
 
-sqRecurse(prev,next,[LH,LT],Leftover) :-
-	cur(prev,next,LH),
-	sqRecurse(LT,Leftover).	
+sqRecurse(Len,Cur,Next,Leftover,Leftover) :-
+	Len is 0.
 
-cur(p,n,H) :-
-	p == H.
-
-cur(p,n,H) :-
-	n == H,
-	n is p,
-	NextClockwise(n,val),
-	n is val.
-
-NextClockwise("u",val) :-
-	val is "r".
-NextClockwise("r",val) :-
-	val is "d".
-NextClockwise("d",val) :-
-	val is "l".
-NextClockwise("l",val) :-
-	val is "u".
+sqRecurse(Len,Cur,Next,[LH|LT],Leftover) :-
+	cur(Cur,Next,LH,NewCur,NewNext),
+	sqRecurse(Ll,NewCur,NewNext,LT,Leftover),
+	tailIsCorrect(Ll,LH),
+	Len is Ll+1.	
 
 
+cur(C,N,H,C2,N2) :-
+	C \== H,
+	C2 = N,
+	nextClockwise(N,N2),
+	C2 == H.
+
+cur(C,N,H,C2,N2) :-
+	C == H,
+	C2 = C,
+	N2 = N.
 
 
+tailIsCorrect(Len,Tail) :-
+	Len == 0,
+	Tail == "l".
+
+tailIsCorrect(Len,Tail) :-
+	Len > 0.
 
 
+nextClockwise(In,Val) :-
+	In == "u",
+	right(Val).
+nextClockwise(In,Val) :-
+	In == "r",
+	down(Val).
+nextClockwise(In,Val) :-
+	In == "d",
+	left(Val).
+nextClockwise(In,Val) :-
+	In == "l",
+	up(Val).
+
+
+/* sqA
+	Succeeds if In is a string list representing u^n r^n d^n l^n with string Leftover leftover
+
+*/
+
+sqA(Leftover,Leftover).
+
+sqA(Str,Leftover) :-
+	up(Prev),
+	nextClockwise(Prev,Next).
 
 
 
