@@ -23,12 +23,12 @@ down("d").
 	Leftovers
 */
 
-uA(Length,Leftover,Leftover) :-
+uA(Length,[],[]) :-
 	Length is 0.
 
 
-uA(Length,[SH|ST],Leftover) :-
-	uA(Llength,ST,Leftover),
+uA(Length,[SH|ST],[]) :-
+	uA(Llength,ST,[]),
 	SH == "u",
 	Length is Llength+1.
 
@@ -37,11 +37,10 @@ uA(Length,[SH|ST],Leftover) :-
 	Parse string for sequence of "r" and if succeeds indicates length
 */
 
-rA(L,Leftover,Leftover) :- L is 0.
+rA(L,[],[]) :- L is 0.
 
-rA(L,[LH|LT],A) :-
-	rA(Ll,LT,A),
-	LH == "r",
+rA(L,["r"|LT],[]) :-
+	rA(Ll,LT,[]),
 	L is Ll+1.
 
 
@@ -49,11 +48,10 @@ rA(L,[LH|LT],A) :-
 	Parse string for sequence of "d" and if succeeds indicates length
 */
 
-dA(L,Leftover,Leftover) :- L is 0.
+dA(L,[],[]) :- L is 0.
 
-dA(L,[LH,LT],A) :-
-	dA(Ll,LT,A),
-	LH == "d",
+dA(L,["d",LT],[]) :-
+	dA(Ll,LT,[]),
 	L is Ll+1.
 
 
@@ -61,11 +59,10 @@ dA(L,[LH,LT],A) :-
 	Parse string for sequence of "l" and if succeeds indicates length
 */
 
-lA(L,Leftover,Leftover) :- L is 0.
+lA(L,[],[]) :- L is 0.
 
-lA(L,[LH|LT],A) :-
-	lA(Ll,LT,A),
-	LH == "l",
+lA(L,["l"|LT],[]) :-
+	lA(Ll,LT,[]),
 	L is Ll+1.
 
 
@@ -73,56 +70,50 @@ lA(L,[LH|LT],A) :-
 	Succeeds if In is a string list representing u^n r^m d^l l^p with string Leftover leftover.
 */
 
-sq(Leftover,Leftover).
+sq([],[]).
 
-sq(Str,Leftover) :-
+sq(Str,[]) :-
 	up(Prev),
 	nextClockwise(Prev,Next),
-	sqRecurse(Length,Prev,Next,Str,Leftover).
+	sqRecurse(Length,Prev,Next,Str,[]).
 	
 
-sqRecurse(Len,Cur,Next,Leftover,Leftover) :-
+/* sqRecurse/5: recurse through list and make sure it represents a square */
+sqRecurse(Len,_,_,[],[]) :-
 	Len is 0.
 
 sqRecurse(Len,Cur,Next,[LH|LT],Leftover) :-
-	validateEdge(Cur,Next,LH,NewCur,NewNext),
+	cur(Cur,Next,LH,NewCur,NewNext),
 	sqRecurse(Ll,NewCur,NewNext,LT,Leftover),
 	tailIsCorrect(Ll,LH),
 	Len is Ll+1.	
 
 
-validateEdge(C,N,H,C2,N2) :-
+cur(C,N,H,C2,N2) :-
 	C \== H,
 	C2 = N,
 	nextClockwise(N,N2),
 	C2 == H.
 
-validateEdge(C,N,H,C2,N2) :-
+cur(C,N,H,C2,N2) :-
 	C == H,
 	C2 = C,
 	N2 = N.
 
+/* tailIsCorrect/2: make sure tail of square ends in "l" */
 
 tailIsCorrect(Len,Tail) :-
 	Len == 0,
 	Tail == "l".
 
-tailIsCorrect(Len,Tail) :-
+tailIsCorrect(Len,_) :-
 	Len > 0.
 
 
-nextClockwise(In,Val) :-
-	In == "u",
-	right(Val).
-nextClockwise(In,Val) :-
-	In == "r",
-	down(Val).
-nextClockwise(In,Val) :-
-	In == "d",
-	left(Val).
-nextClockwise(In,Val) :-
-	In == "l",
-	up(Val).
+nextClockwise("u","r").
+nextClockwise("r","d").
+nextClockwise("d","l").
+nextClockwise("l","u").
 
 
 /* sqA
@@ -130,42 +121,66 @@ nextClockwise(In,Val) :-
 
 */
 
-sqA(Leftover,Leftover).
+sqA([],Leftover).
 
 sqA(Str,Leftover) :-
 	up(Prev),
-	nextClockwise(Prev,Next).
+	nextClockwise(Prev,Next),
+	sq(Str,Leftover),
+	uEdge(Str,SideLen),	
+	rdlEdge(Str,SideLen).
 
 
-sqARecurse(Len,Cur,Next,Leftover,Leftover,CU,CR,CD,CL) :-
+/* uEdge/2: Bind length of initial "u" vector */
+uEdge([],Len) :- 
+	false.
+
+uEdge([SH|ST],Len) :-
+	SH \== "u",
 	Len is 0.
 
-sqARecurse(Len,Cur,Next,[LH|LT],Leftover,CU,CR,CD,CL) :-
-	validateEdge(Cur,Next,LH,NewCur,NewNext),
-	isCorner(LH,Cur,NewCur,Corner),
-	sqARecurse(L1,NewCur,NewNext,LT,leftover),
-	tailIsCorrect(Ll,LH),
-	Len is Ll+1.
-	edgeLength(H,CU,CR,CD,CL,Cu,Cr,Cd,Cl).
+uEdge([SH|ST],Len) :-
+	SH == "u",
+	uEdge(ST,Llen),
+	Len is Llen+1.
 
-/*
-edgeLength(H,CU,CR,CD,CL,Cu,Cr,Cd,Cl) :-
-	Up(H),
-	Right(H),
-	Down(H),
-	Left(H),
-*/
+
+/* verifyEdgeLen(Str,Dir,IsSubstr,Target,CurLen,Leftover) */
+
+verifyEdgeLen([],Dir,0,Target,CurLen,Leftover).
+
+verifyEdgeLen([],Dir,1,Target,Target,Leftover).
+
+verifyEdgeLen([SH|ST],Dir,0,Target,CurLen,Leftover) :-
+	SH \== Dir,
+	verifyEdgeLen(ST,Dir,0,Target,CurLen,Leftover).
+
+
+verifyEdgeLen([Dir|ST],Dir,0,Target,CurLen,Leftover) :-
+	verifyEdgeLen(ST,Dir,1,Target,1,[]).
 	
 
+verifyEdgeLen([SH|ST],Dir,1,Target,CurLen,Leftover) :-
+	SH \== Dir,
+	CurLen == Target,
+	!.
+
+verifyEdgeLen([Dir|ST],Dir,1,Target,CurLen,Leftover) :-
+	NewLen is CurLen+1,
+	verifyEdgeLen(ST,Dir,1,Target,NewLen,Leftover).
 
 
-isCorner(H,C,C2,Corner) :-
-	C == H,
-	Corner = 0.
+rdlEdge([SH|ST],Len) :-
+	verifyEdgeLen([SH|ST],"r",0,Len,0,[]),
+	verifyEdgeLen([SH|ST],"d",0,Len,0,[]),
+	verifyEdgeLen([SH|ST],"l",0,Len,0,[]).
 
-isCorner(H,C,C2,Corner) :-
-	C2 == H,
-	Corner = 1.
+
+
+
+
+
+
 
 
 
