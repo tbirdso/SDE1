@@ -232,9 +232,30 @@ gSide(Dir,Target,N,Start,Out) :-
 	Out = [Dir|Out1].
 
 
+/* m30A/3
+	Like uA but with m30
+*/
+
+m30A(Len,[],[]) :-
+	Len is 0.	
+
+m30A(Len,[SH|ST],[]) :-
+	m30A(Llen,ST,[]),
+	SH == "m30",
+	Len is Llen+1.
 
 
+/* p240A/3
+	Like uA but with p240
+*/
 
+p240A(Len,[],[]) :-
+	Len is 0.
+
+p240A(Len,[SH|ST],[]) :-
+	p240A(Llen,ST,[]),
+	SH == "p240",
+	Len is Llen+1.
 
 
 
