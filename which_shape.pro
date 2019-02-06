@@ -75,7 +75,7 @@ sq([],[]).
 sq(Str,[]) :-
 	up(Prev),
 	nextClockwise(Prev,Next),
-	sqRecurse(Length,Prev,Next,Str,[]).
+	sqRecurse(_,Prev,Next,Str,[]).
 	
 
 /* sqRecurse/5: recurse through list and make sure it represents a square */
@@ -121,21 +121,22 @@ nextClockwise("l","u").
 
 */
 
-sqA([],Leftover).
+sqA([],[]).
 
-sqA(Str,Leftover) :-
-	up(Prev),
-	nextClockwise(Prev,Next),
-	sq(Str,Leftover),
+sqA(Str,[]) :-
+	sq(Str,[]),
 	uEdge(Str,SideLen),	
 	rdlEdge(Str,SideLen).
 
 
 /* uEdge/2: Bind length of initial "u" vector */
-uEdge([],Len) :- 
-	false.
+uEdge([],_) :- false.
 
-uEdge([SH|ST],Len) :-
+uEdge([SH],Len) :-
+	SH \== "u",
+	Len is 0.
+
+uEdge([SH|_],Len) :-
 	SH \== "u",
 	Len is 0.
 
@@ -147,27 +148,26 @@ uEdge([SH|ST],Len) :-
 
 /* verifyEdgeLen(Str,Dir,IsSubstr,Target,CurLen,Leftover) */
 
-verifyEdgeLen([],Dir,0,Target,CurLen,Leftover).
+verifyEdgeLen([],_,0,_,_,[]).
 
-verifyEdgeLen([],Dir,1,Target,Target,Leftover).
+verifyEdgeLen([],_,1,Target,Target,[]).
 
-verifyEdgeLen([SH|ST],Dir,0,Target,CurLen,Leftover) :-
+verifyEdgeLen([SH|ST],Dir,0,Target,CurLen,[]) :-
 	SH \== Dir,
-	verifyEdgeLen(ST,Dir,0,Target,CurLen,Leftover).
+	verifyEdgeLen(ST,Dir,0,Target,CurLen,[]).
 
 
-verifyEdgeLen([Dir|ST],Dir,0,Target,CurLen,Leftover) :-
+verifyEdgeLen([Dir|ST],Dir,0,Target,_,[]) :-
 	verifyEdgeLen(ST,Dir,1,Target,1,[]).
 	
 
-verifyEdgeLen([SH|ST],Dir,1,Target,CurLen,Leftover) :-
+verifyEdgeLen([SH|_],Dir,1,Target,CurLen,[]) :-
 	SH \== Dir,
-	CurLen == Target,
-	!.
+	CurLen == Target.
 
-verifyEdgeLen([Dir|ST],Dir,1,Target,CurLen,Leftover) :-
+verifyEdgeLen([Dir|ST],Dir,1,Target,CurLen,[]) :-
 	NewLen is CurLen+1,
-	verifyEdgeLen(ST,Dir,1,Target,NewLen,Leftover).
+	verifyEdgeLen(ST,Dir,1,Target,NewLen,[]).
 
 
 rdlEdge([SH|ST],Len) :-
