@@ -215,6 +215,8 @@ dlEdge([SH|ST],UpLen,RightLen) :-
 */
 
 grect(A,B,C) :-
+	A > 0,
+	B > 0,
 	gSide("l",B,0,[],S1),
 	gSide("d",A,0,S1,S2),
 	gSide("r",B,0,S2,S3),
@@ -222,14 +224,12 @@ grect(A,B,C) :-
 
 
 gSide(_,Target,Target,Start,Out) :-
-	Out is Start.
-
-gSide(Dir,Target,0,Start,Out) :-
-	gSide(Dir,Target,1,[Dir|Start],Out).	
+	Out = Start.
 
 gSide(Dir,Target,N,Start,Out) :-
 	GLen is N+1,
-	gSide(Dir,Target,GLen,[Dir|Start],Out).
+	gSide(Dir,Target,GLen,Start,Out1),
+	Out = [Dir|Out1].
 
 
 
