@@ -23,47 +23,30 @@ down("d").
 	Leftovers
 */
 
-uA(Length,[],[]) :-
-	Length is 0.
-
-
-uA(Length,[SH|ST],Leftover) :-
-	uA(Llength,ST,Leftover),
-	SH == "u",
-	Length is Llength+1.
+uA(Length) --> ["u"],uA(Ll),{Length is Ll+1}.
+uA(Length) --> ["u"],{Length is 1}.
 
 
 /* rA
 	Parse string for sequence of "r" and if succeeds indicates length
 */
 
-rA(L,[],[]) :- L is 0.
-
-rA(L,["r"|LT],Leftover) :-
-	rA(Ll,LT,Leftover),
-	L is Ll+1.
-
+rA(Length) --> ["r"],rA(Ll),{Length is Ll+1}.
+rA(Length) --> ["r"],{Length is 1}.
 
 /* dA
 	Parse string for sequence of "d" and if succeeds indicates length
 */
 
-dA(L,[],[]) :- L is 0.
-
-dA(L,["d",LT],Leftover) :-
-	dA(Ll,LT,Leftover),
-	L is Ll+1.
-
+dA(Length) --> ["d"],dA(Ll),{Length is Ll+1}.
+dA(Length) --> ["d"],{Length is 1}.
 
 /* lA
 	Parse string for sequence of "l" and if succeeds indicates length
 */
 
-lA(L,[],[]) :- L is 0.
-
-lA(L,["l"|LT],Leftover) :-
-	lA(Ll,LT,Leftover),
-	L is Ll+1.
+lA(Length) --> ["l"],lA(Ll),{Length is Ll+1}.
+lA(Length) --> ["l"],{Length is 1}.
 
 
 /* sq
