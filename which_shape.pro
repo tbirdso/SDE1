@@ -27,8 +27,8 @@ uA(Length,[],[]) :-
 	Length is 0.
 
 
-uA(Length,[SH|ST],[]) :-
-	uA(Llength,ST,[]),
+uA(Length,[SH|ST],Leftover) :-
+	uA(Llength,ST,Leftover),
 	SH == "u",
 	Length is Llength+1.
 
@@ -39,8 +39,8 @@ uA(Length,[SH|ST],[]) :-
 
 rA(L,[],[]) :- L is 0.
 
-rA(L,["r"|LT],[]) :-
-	rA(Ll,LT,[]),
+rA(L,["r"|LT],Leftover) :-
+	rA(Ll,LT,Leftover),
 	L is Ll+1.
 
 
@@ -50,8 +50,8 @@ rA(L,["r"|LT],[]) :-
 
 dA(L,[],[]) :- L is 0.
 
-dA(L,["d",LT],[]) :-
-	dA(Ll,LT,[]),
+dA(L,["d",LT],Leftover) :-
+	dA(Ll,LT,Leftover),
 	L is Ll+1.
 
 
@@ -61,8 +61,8 @@ dA(L,["d",LT],[]) :-
 
 lA(L,[],[]) :- L is 0.
 
-lA(L,["l"|LT],[]) :-
-	lA(Ll,LT,[]),
+lA(L,["l"|LT],Leftover) :-
+	lA(Ll,LT,Leftover),
 	L is Ll+1.
 
 
@@ -72,10 +72,10 @@ lA(L,["l"|LT],[]) :-
 
 sq([],[]).
 
-sq(Str,[]) :-
+sq(Str,Leftover) :-
 	up(Prev),
 	nextClockwise(Prev,Next),
-	sqRecurse(_,Prev,Next,Str,[]).
+	sqRecurse(_,Prev,Next,Str,Leftover).
 	
 
 /* sqRecurse/5: recurse through list and make sure it represents a square */
@@ -123,24 +123,24 @@ nextClockwise("l","u").
 
 sqA([],[]).
 
-sqA(Str,[]) :-
-	sq(Str,[]),
-	subLen(Str,"u",SideLen,0,[]),
-	subLen(Str,"r",SideLen,0,[]),
-	subLen(Str,"d",SideLen,0,[]),
-	subLen(Str,"l",SideLen,0,[]).
+sqA(Str,Leftover) :-
+	sq(Str,Leftover),
+	subLen(Str,"u",SideLen,0),
+	subLen(Str,"r",SideLen,0),
+	subLen(Str,"d",SideLen,0),
+	subLen(Str,"l",SideLen,0).
 
 
 /* rctA/2
 	Like sqA, but only parallel sides must have equal length
 */
 
-rctA(Str,[]) :-
-	sq(Str,[]),
-	subLen(Str,"u",UpLen,0,[]),
-	subLen(Str,"r",RightLen,0,[]),
-	subLen(Str,"d",UpLen,0,[]),
-	subLen(Str,"l",RightLen,0,[]).
+rctA(Str,Leftover) :-
+	sq(Str,Leftover),
+	subLen(Str,"u",UpLen,0),
+	subLen(Str,"r",RightLen,0),
+	subLen(Str,"d",UpLen,0),
+	subLen(Str,"l",RightLen,0).
 
 
 /* grect/3
@@ -172,8 +172,8 @@ gSide(Dir,Target,N,Start,Out) :-
 m30A(Len,[],[]) :-
 	Len is 0.	
 
-m30A(Len,[SH|ST],[]) :-
-	m30A(Llen,ST,[]),
+m30A(Len,[SH|ST],Leftover) :-
+	m30A(Llen,ST,Leftover),
 	SH == "m30",
 	Len is Llen+1.
 
@@ -185,8 +185,8 @@ m30A(Len,[SH|ST],[]) :-
 p240A(Len,[],[]) :-
 	Len is 0.
 
-p240A(Len,[SH|ST],[]) :-
-	p240A(Llen,ST,[]),
+p240A(Len,[SH|ST],Leftover) :-
+	p240A(Llen,ST,Leftover),
 	SH == "p240",
 	Len is Llen+1.
 
@@ -197,38 +197,38 @@ p240A(Len,[SH|ST],[]) :-
 
 eqtriA(Str,[]) :-
 	tri(Str,"u",[]),
-	subLen(Str,"u",SideLen,0,[]),
-	subLen(Str,"m30",SideLen,0,[]),
-	subLen(Str,"p240",SideLen,0,[]).
+	subLen(Str,"u",SideLen,0),
+	subLen(Str,"m30",SideLen,0),
+	subLen(Str,"p240",SideLen,0).
 
 /* tri/3 = check whether string contains only triangle elements that are in the order u^i m30^j p240^k */
 
 tri([],"p240",[]).
 
-tri(["m30"|ST],"u",[]) :-
-	tri(ST,"m30",[]).
+tri(["m30"|ST],"u",Leftover) :-
+	tri(ST,"m30",Leftover).
 
-tri(["p240"|ST],"m30",[]) :-
-	tri(ST,"p240",[]).
+tri(["p240"|ST],"m30",Leftover) :-
+	tri(ST,"p240",Leftover).
 	
-tri([Dir|ST],Dir,[]) :-
-	tri(ST,Dir,[]).
+tri([Dir|ST],Dir,Leftover) :-
+	tri(ST,Dir,Leftover).
 
 
 /* subLen/4 = get the length for the first occurance of a substring of repeated characters */
 
-subLen([],_,Len,_,[]) :-
+subLen([],_,Len,_) :-
 	Len is 0.
 
-subLen([Dir|ST],Dir,Len,_,[]) :-
-	subLen(ST,Dir,Llen,1,[]),
+subLen([Dir|ST],Dir,Len,_) :-
+	subLen(ST,Dir,Llen,1),
 	Len is Llen+1.
 
-subLen([SH|ST],Dir,Len,0,[]) :-
+subLen([SH|ST],Dir,Len,0) :-
 	SH \== Dir,
-	subLen(ST,Dir,Len,0,[]).
+	subLen(ST,Dir,Len,0).
 
-subLen([SH|_],Dir,Len,1,[]) :-
+subLen([SH|_],Dir,Len,1) :-
 	SH \== Dir,
 	Len is 0.
 
