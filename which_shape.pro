@@ -237,8 +237,11 @@ subLen([SH|_],Dir,Len,1,[]) :-
 	Cycle list to the left by one position
 */
 
+one_shift([A],[A]).
 
-
+one_shift([FA,FB|FT],Out) :-
+	one_shift([FA|FT],L),
+	Out = [FB|L].
 
 
 
