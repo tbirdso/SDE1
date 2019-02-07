@@ -258,6 +258,48 @@ p240A(Len,[SH|ST],[]) :-
 	Len is Llen+1.
 
 
+/* eqtriA/2
+	Recognize equilateral triangle u^n m30^n p240^n
+*/
+
+eqtriA(Str,[]) :-
+	tri(Str,"u",[]),
+	subLen(Str,"u",SideLen,0,[]),
+	subLen(Str,"m30",SideLen,0,[]),
+	subLen(Str,"p240",SideLen,0,[]).
+
+/* tri/3 = check whether string contains only triangle elements that are in the order u^i m30^j p240^k */
+
+tri([],"p240",[]).
+
+tri(["m30"|ST],"u",[]) :-
+	tri(ST,"m30",[]).
+
+tri(["p240"|ST],"m30",[]) :-
+	tri(ST,"p240",[]).
+	
+tri([Dir|ST],Dir,[]) :-
+	tri(ST,Dir,[]).
+
+
+/* subLen/4 = get the length for the first occurance of a substring of repeated characters */
+
+subLen([],_,Len,_,[]) :-
+	Len is 0.
+
+subLen([Dir|ST],Dir,Len,_,[]) :-
+	subLen(ST,Dir,Llen,1,[]),
+	Len is Llen+1.
+
+subLen([SH|ST],Dir,Len,0,[]) :-
+	SH \== Dir,
+	subLen(ST,Dir,Len,0,[]).
+
+subLen([SH|ST],Dir,Len,1,[]) :-
+	SH \== Dir,
+	Len is 0.
+
+
 
 
 
