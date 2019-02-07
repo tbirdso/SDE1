@@ -83,19 +83,19 @@ sqRecurse(Len,_,_,[],[]) :-
 	Len is 0.
 
 sqRecurse(Len,Cur,Next,[LH|LT],Leftover) :-
-	cur(Cur,Next,LH,NewCur,NewNext),
+	corner(Cur,Next,LH,NewCur,NewNext),
 	sqRecurse(Ll,NewCur,NewNext,LT,Leftover),
 	tailIsCorrect(Ll,LH),
 	Len is Ll+1.	
 
 
-cur(C,N,H,C2,N2) :-
+corner(C,N,H,C2,N2) :-
 	C \== H,
 	C2 = N,
 	nextClockwise(N,N2),
 	C2 == H.
 
-cur(C,N,H,C2,N2) :-
+corner(C,N,H,C2,N2) :-
 	C == H,
 	C2 = C,
 	N2 = N.
@@ -125,55 +125,10 @@ sqA([],[]).
 
 sqA(Str,[]) :-
 	sq(Str,[]),
-	uLen(Str,SideLen),	
-	rdlEdge(Str,SideLen).
-
-
-/* uLen/2: Bind length of initial "u" vector */
-uLen([],_) :- false.
-
-uLen([SH],Len) :-
-	SH \== "u",
-	Len is 0.
-
-uLen([SH|_],Len) :-
-	SH \== "u",
-	Len is 0.
-
-uLen(["u"|ST],Len) :-
-	uLen(ST,Llen),
-	Len is Llen+1.
-
-
-/* verifyEdgeLen(Str,Dir,IsSubstr,Target,CurLen,Leftover) */
-
-verifyEdgeLen([],_,0,_,_,[]).
-
-verifyEdgeLen([],_,1,Target,Target,[]).
-
-verifyEdgeLen([SH|ST],Dir,0,Target,CurLen,[]) :-
-	SH \== Dir,
-	verifyEdgeLen(ST,Dir,0,Target,CurLen,[]).
-
-
-verifyEdgeLen([Dir|ST],Dir,0,Target,_,[]) :-
-	verifyEdgeLen(ST,Dir,1,Target,1,[]).
-	
-
-verifyEdgeLen([SH|_],Dir,1,Target,CurLen,[]) :-
-	SH \== Dir,
-	CurLen == Target.
-
-verifyEdgeLen([Dir|ST],Dir,1,Target,CurLen,[]) :-
-	NewLen is CurLen+1,
-	verifyEdgeLen(ST,Dir,1,Target,NewLen,[]).
-
-
-rdlEdge([SH|ST],Len) :-
-	verifyEdgeLen([SH|ST],"r",0,Len,0,[]),
-	verifyEdgeLen([SH|ST],"d",0,Len,0,[]),
-	verifyEdgeLen([SH|ST],"l",0,Len,0,[]).
-
+	subLen(Str,"u",SideLen,0,[]),
+	subLen(Str,"r",SideLen,0,[]),
+	subLen(Str,"d",SideLen,0,[]),
+	subLen(Str,"l",SideLen,0,[]).
 
 
 /* rctA/2
@@ -182,32 +137,10 @@ rdlEdge([SH|ST],Len) :-
 
 rctA(Str,[]) :-
 	sq(Str,[]),
-	uLen(Str,UpLen),
-	rLen(Str,RightLen),
-	dlEdge(Str,UpLen,RightLen).
-
-
-rLen([],_) :- false.
-rLen([SH],Len) :-
-	SH \== "r",
-	Len is 0.
-
-rLen([SH|_],Len) :-
-	SH \== "r",
-	SH \== "u",
-	Len is 0.
-
-rLen(["r"|ST],Len) :-
-	rLen(ST,Llen),
-	Len is Llen+1.
-
-rLen(["u"|ST],Len) :-
-	rLen(ST,Len).
-
-dlEdge([SH|ST],UpLen,RightLen) :-
-	verifyEdgeLen([SH|ST],"d",0,UpLen,0,[]),
-	verifyEdgeLen([SH|ST],"l",0,RightLen,0,[]).
-
+	subLen(Str,"u",UpLen,0,[]),
+	subLen(Str,"r",RightLen,0,[]),
+	subLen(Str,"d",UpLen,0,[]),
+	subLen(Str,"l",RightLen,0,[]).
 
 
 /* grect/3
@@ -295,9 +228,15 @@ subLen([SH|ST],Dir,Len,0,[]) :-
 	SH \== Dir,
 	subLen(ST,Dir,Len,0,[]).
 
-subLen([SH|ST],Dir,Len,1,[]) :-
+subLen([SH|_],Dir,Len,1,[]) :-
 	SH \== Dir,
 	Len is 0.
+
+
+/* one_shift/2
+	Cycle list to the left by one position
+*/
+
 
 
 
