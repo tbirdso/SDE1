@@ -125,24 +125,23 @@ sqA([],[]).
 
 sqA(Str,[]) :-
 	sq(Str,[]),
-	uEdge(Str,SideLen),	
+	uLen(Str,SideLen),	
 	rdlEdge(Str,SideLen).
 
 
-/* uEdge/2: Bind length of initial "u" vector */
-uEdge([],_) :- false.
+/* uLen/2: Bind length of initial "u" vector */
+uLen([],_) :- false.
 
-uEdge([SH],Len) :-
+uLen([SH],Len) :-
 	SH \== "u",
 	Len is 0.
 
-uEdge([SH|_],Len) :-
+uLen([SH|_],Len) :-
 	SH \== "u",
 	Len is 0.
 
-uEdge([SH|ST],Len) :-
-	SH == "u",
-	uEdge(ST,Llen),
+uLen(["u"|ST],Len) :-
+	uLen(ST,Llen),
 	Len is Llen+1.
 
 
@@ -177,18 +176,86 @@ rdlEdge([SH|ST],Len) :-
 
 
 
+/* rctA/2
+	Like sqA, but only parallel sides must have equal length
+*/
+
+rctA(Str,[]) :-
+	sq(Str,[]),
+	uLen(Str,UpLen),
+	rLen(Str,RightLen),
+	dlEdge(Str,UpLen,RightLen).
+
+
+rLen([],_) :- false.
+rLen([SH],Len) :-
+	SH \== "r",
+	Len is 0.
+
+rLen([SH|_],Len) :-
+	SH \== "r",
+	SH \== "u",
+	Len is 0.
+
+rLen(["r"|ST],Len) :-
+	rLen(ST,Llen),
+	Len is Llen+1.
+
+rLen(["u"|ST],Len) :-
+	rLen(ST,Len).
+
+dlEdge([SH|ST],UpLen,RightLen) :-
+	verifyEdgeLen([SH|ST],"d",0,UpLen,0,[]),
+	verifyEdgeLen([SH|ST],"l",0,RightLen,0,[]).
 
 
 
+/* grect/3
+	Generate an AxB rectangle
+*/
+
+grect(A,B,C) :-
+	A > 0,
+	B > 0,
+	gSide("l",B,0,[],S1),
+	gSide("d",A,0,S1,S2),
+	gSide("r",B,0,S2,S3),
+	gSide("u",A,0,S3,C).
 
 
+gSide(_,Target,Target,Start,Out) :-
+	Out = Start.
+
+gSide(Dir,Target,N,Start,Out) :-
+	GLen is N+1,
+	gSide(Dir,Target,GLen,Start,Out1),
+	Out = [Dir|Out1].
 
 
+/* m30A/3
+	Like uA but with m30
+*/
+
+m30A(Len,[],[]) :-
+	Len is 0.	
+
+m30A(Len,[SH|ST],[]) :-
+	m30A(Llen,ST,[]),
+	SH == "m30",
+	Len is Llen+1.
 
 
+/* p240A/3
+	Like uA but with p240
+*/
 
+p240A(Len,[],[]) :-
+	Len is 0.
 
-
+p240A(Len,[SH|ST],[]) :-
+	p240A(Llen,ST,[]),
+	SH == "p240",
+	Len is Llen+1.
 
 
 
