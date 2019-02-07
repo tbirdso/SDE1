@@ -244,4 +244,65 @@ one_shift([FA,FB|FT],Out) :-
 	Out = [FB|L].
 
 
+/* all_shifts/4
+	Returns list of all list cycles except A
+*/
+
+all_shifts(A,R,1,1) :-
+	R = A.
+
+all_shifts(_,R,L,L) :-
+	R = [].
+
+all_shifts(A,R,L,S) :-
+	one_shift(A,B),
+	Ss is S+1,
+	all_shifts(B,Rr,L,Ss),
+	R = [B|Rr],
+	!.
+
+
+/* start_shifts/2
+	Returns list of all list cycles except L
+*/
+
+start_shifts(L,AS) :-
+	length(L,Len),
+	all_shifts(L,AS,Len,1).
+
+
+/* all_cases/2
+	Returns list of all list cycles including A
+*/
+
+all_cases(A,R) :-
+	start_shifts(A,Rr),
+	R = [A|Rr].
+
+
+/* try_all_sqA/1
+	Succeeds if some cyclic case of the list represents a square
+*/
+
+try_all_sqA([Case|Tail]) :-
+	sqA(Case,[]);
+	try_all_sqA(Tail).
+
+
+/* try_all_rctA/1
+	Succeeds if some cyclic case of the list represents a rectangle
+*/
+
+try_all_rctA([Case|Tail]) :-
+	rctA(Case,[]);
+	try_all_rctA(Tail).
+
+/* try_all_eqtriA/1
+	Succeeds if some cyclic case of the list represents a triangle
+*/
+
+try_all_eqtriA([Case|Tail]) :-
+	eqtriA(Case,[]);
+	try_all_eqtriA(Tail).
+
 
