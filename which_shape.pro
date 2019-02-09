@@ -45,14 +45,24 @@ lA(Length) --> ["l"],{Length is 1}.
 	Succeeds if In is a string list representing u^n r^m d^l l^p with string Leftover leftover.
 */
 
-sq(Leftover,Leftover).
+sq --> uA(_),rA(_),dA(_),lA(_).
 
-sq(Str,Leftover) :-
-	nextClockwise("u",Next),
-	sqRecurse(_,"u",Next,Str,Leftover).
-	
+/*
+sq --> [].
+sq --> {nextClockwise("u",N)},sqRecurse(_,"u",N).
+*/
 
 /* sqRecurse/5: recurse through list and make sure it represents a square */
+
+sqRecurse(Len,_,_) --> {Len is 0}.
+
+sqRecurse(Len,Cur,Next) --> 
+	(corner(Cur,Next,NewCur,NewNext),
+	 sqRecurse(Ll,NewCur,NewNext),
+	 tailIsCorrect(Ll,LH,Leftover)
+	),[].
+
+/*
 sqRecurse(Len,_,_,Leftover,Leftover) :-
 	Len is 0.
 
@@ -61,20 +71,20 @@ sqRecurse(Len,Cur,Next,[LH|LT],Leftover) :-
 	sqRecurse(Ll,NewCur,NewNext,LT,Leftover),
 	tailIsCorrect(Ll,LH),
 	Len is Ll+1.	
-
+*/
 
 /* corner/5: if recursion encounters a corner in the square then rotate to accept the new edge */
-corner(C,N,N,N,N2) :-
+corner(C,N,N,N2,N,Leftover) :-
 	C \== N,
 	nextClockwise(N,N2).
 
-corner(C,N,C,C,N).
+corner(C,N,C,N,C,Leftover).
 
 
 /* tailIsCorrect/2: make sure tail of square ends in "l" */
-tailIsCorrect(0,"l").
+tailIsCorrect(0,"l","l").
 
-tailIsCorrect(Len,_) :-
+tailIsCorrect(Len,_,_) :-
 	Len > 0.
 
 
@@ -89,6 +99,8 @@ nextClockwise("l","u").
 	Succeeds if In is a string list representing u^n r^n d^n l^n with string Leftover leftover
 
 */
+
+
 
 sqA([],[]).
 
