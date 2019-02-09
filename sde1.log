@@ -1,0 +1,107 @@
+[1mtrue.[0m
+
+uA(Len,["u","u","u","u","u"],[]).
+
+
+Len = 5 [1m.[0m
+
+uA(L,["u","u","r","u","u","u"],[]).
+
+
+[1;31mfalse.[0m
+
+uA(Len,[],[]).
+
+
+[1;31mfalse.[0m
+
+rA(L,["r","r","r"],[]).
+
+
+L = 3 [1m.[0m
+
+rA(L,["r","r","r","u"],[]).
+
+
+[1;31mfalse.[0m
+
+rA(L,["u","r","r","r"],[]).
+
+
+[1;31mfalse.[0m
+
+dA(L,["d"],[]).
+
+
+L = 1.
+
+dA(L,["d","d","d","d","d","l"],[]).
+
+
+[1;31mfalse.[0m
+
+dA(L,["d","d","d","d","d"],[]).
+
+
+L = 5 [1m.[0m
+
+lA(L,["l","l"],[]).
+
+
+L = 2 [1m.[0m
+
+lA(L,[],[]).
+
+
+[1;31mfalse.[0m
+
+lA(L,["l","u","r","d"],[]).
+
+
+[1;31mfalse.[0m
+
+sq(["u","u","u","u","r","d","l"],[]).
+
+
+[31;1mERROR: Undefined procedure: up/1
+ERROR: In:
+ERROR:    [9] up(_476)
+ERROR:    [8] sq(["u","u"|...],[]) at /home/tbirdso/ECE352/SDE1/which_shape.pro:51
+ERROR:    [7] <user>
+[0m   [1;35mException: [0m(9) up(_562) ? creep
+sqA(["u","r","r","d","l"],[]).
+
+
+[31;1mERROR: Undefined procedure: up/1
+ERROR: In:
+ERROR:   [10] up(_532)
+ERROR:    [9] sq(["u","r"|...],[]) at /home/tbirdso/ECE352/SDE1/which_shape.pro:50
+ERROR:    [8] sqA(["u","r"|...],[]) at /home/tbirdso/ECE352/SDE1/which_shape.pro:96
+ERROR:    [7] <user>
+[0m   [1;35mException: [0m(10) up(_656) ? rretry
+[retry]
+   [1;32mCall: [0m(10) up(_656) ? ccreep
+[31;1mERROR: Undefined procedure: up/1
+ERROR: In:
+ERROR:   [10] up(_1136)
+ERROR:    [9] sq(["u","r"|...],[]) at /home/tbirdso/ECE352/SDE1/which_shape.pro:50
+ERROR:    [8] sqA(["u","r"|...],[]) at /home/tbirdso/ECE352/SDE1/which_shape.pro:96
+ERROR:    [7] <user>
+[0m   [1;35mException: [0m(10) up(_1260) ? nno debug
+rctA(["u","r","d","l"],[])
+.
+
+
+[31;1mERROR: Undefined procedure: up/1
+ERROR: In:
+ERROR:   [10] up(_7014)
+ERROR:    [9] sq(["u","r"|...],[]) at /home/tbirdso/ECE352/SDE1/which_shape.pro:50
+ERROR:    [8] rctA(["u","r"|...],[]) at /home/tbirdso/ECE352/SDE1/which_shape.pro:108
+ERROR:    [7] <user>
+[0m   [1;35mException: [0m(10) up(_7150) ? ggoals
+[1m [10] [0mup(_7170)
+[1m  [9] [0msq(["u", "r", "d", "l"], [])
+[1m  [8] [0mrctA(["u", "r", "d", "l"], [])
+   [1;35mException: [0m(10) up(_7150) ? rretry
+[retry]
+   [1;32mCall: [0m(10) up(_7150) ? eexit (status 4)

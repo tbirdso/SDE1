@@ -5,14 +5,6 @@
 	Due:	Feb 28th
 */
 
-/* Basic Fact */
-
-up("u").
-left("l").
-right("r").
-down("d").
-
-
 /* Predicates */
 
 /* uA
@@ -53,16 +45,15 @@ lA(Length) --> ["l"],{Length is 1}.
 	Succeeds if In is a string list representing u^n r^m d^l l^p with string Leftover leftover.
 */
 
-sq([],[]).
+sq(Leftover,Leftover).
 
 sq(Str,Leftover) :-
-	up(Prev),
-	nextClockwise(Prev,Next),
-	sqRecurse(_,Prev,Next,Str,Leftover).
+	nextClockwise("u",Next),
+	sqRecurse(_,"u",Next,Str,Leftover).
 	
 
 /* sqRecurse/5: recurse through list and make sure it represents a square */
-sqRecurse(Len,_,_,[],[]) :-
+sqRecurse(Len,_,_,Leftover,Leftover) :-
 	Len is 0.
 
 sqRecurse(Len,Cur,Next,[LH|LT],Leftover) :-
@@ -72,27 +63,22 @@ sqRecurse(Len,Cur,Next,[LH|LT],Leftover) :-
 	Len is Ll+1.	
 
 
-corner(C,N,H,C2,N2) :-
-	C \== H,
-	C2 = N,
-	nextClockwise(N,N2),
-	C2 == H.
+/* corner/5: if recursion encounters a corner in the square then rotate to accept the new edge */
+corner(C,N,N,N,N2) :-
+	C \== N,
+	nextClockwise(N,N2).
 
-corner(C,N,H,C2,N2) :-
-	C == H,
-	C2 = C,
-	N2 = N.
+corner(C,N,C,C,N).
+
 
 /* tailIsCorrect/2: make sure tail of square ends in "l" */
-
-tailIsCorrect(Len,Tail) :-
-	Len == 0,
-	Tail == "l".
+tailIsCorrect(0,"l").
 
 tailIsCorrect(Len,_) :-
 	Len > 0.
 
 
+/* nextClockwise/2: return next side from a 90-degree clockwise rotation */
 nextClockwise("u","r").
 nextClockwise("r","d").
 nextClockwise("d","l").
@@ -108,10 +94,10 @@ sqA([],[]).
 
 sqA(Str,Leftover) :-
 	sq(Str,Leftover),
-	subLen(Str,"u",SideLen,0),
-	subLen(Str,"r",SideLen,0),
-	subLen(Str,"d",SideLen,0),
-	subLen(Str,"l",SideLen,0).
+	subLen("u",SideLen,0,Str,[]),
+	subLen("r",SideLen,0,Str,[]),
+	subLen("d",SideLen,0,Str,[]),
+	subLen("l",SideLen,0,Str,[]).
 
 
 /* rctA/2
@@ -120,10 +106,10 @@ sqA(Str,Leftover) :-
 
 rctA(Str,Leftover) :-
 	sq(Str,Leftover),
-	subLen(Str,"u",UpLen,0),
-	subLen(Str,"r",RightLen,0),
-	subLen(Str,"d",UpLen,0),
-	subLen(Str,"l",RightLen,0).
+	subLen("u",UpLen,0,Str,[]),
+	subLen("r",RightLen,0,Str,[]),
+	subLen("d",UpLen,0,Str,[]),
+	subLen("l",RightLen,0,Str,[]).
 
 
 /* grect/3
@@ -139,39 +125,25 @@ grect(A,B,C) :-
 	gSide("u",A,0,S3,C).
 
 
-gSide(_,Target,Target,Start,Out) :-
-	Out = Start.
-
-gSide(Dir,Target,N,Start,Out) :-
-	GLen is N+1,
-	gSide(Dir,Target,GLen,Start,Out1),
-	Out = [Dir|Out1].
-
+gSide(_,Len,Len) --> [].
+gSide(Dir,Len,CurLen), [Dir] --> 
+	{GLen is CurLen+1},
+	gSide(Dir,Len,GLen).
 
 /* m30A/3
 	Like uA but with m30
 */
 
-m30A(Len,[],[]) :-
-	Len is 0.	
-
-m30A(Len,[SH|ST],Leftover) :-
-	m30A(Llen,ST,Leftover),
-	SH == "m30",
-	Len is Llen+1.
+m30A(Len) --> ["m30"],m30A(Ll),{Len is Ll+1}.
+m30A(Len) --> ["m30"],{Len is 1}.
 
 
 /* p240A/3
 	Like uA but with p240
 */
 
-p240A(Len,[],[]) :-
-	Len is 0.
-
-p240A(Len,[SH|ST],Leftover) :-
-	p240A(Llen,ST,Leftover),
-	SH == "p240",
-	Len is Llen+1.
+p240A(Len) --> ["p240"],p240A(Ll),{Len is Ll+1}.
+p240A(Len) --> ["p240"],{Len is 1}.
 
 
 /* eqtriA/2
@@ -179,39 +151,34 @@ p240A(Len,[SH|ST],Leftover) :-
 */
 
 eqtriA(Str,[]) :-
-	tri(Str,"u",[]),
-	subLen(Str,"u",SideLen,0),
-	subLen(Str,"m30",SideLen,0),
-	subLen(Str,"p240",SideLen,0).
+	tri("u",Str,[]),
+	subLen("u",SideLen,0,Str,[]),
+	subLen("m30",SideLen,0,Str,[]),
+	subLen("p240",SideLen,0,Str,[]).
+
 
 /* tri/3 = check whether string contains only triangle elements that are in the order u^i m30^j p240^k */
 
-tri([],"p240",[]).
-
-tri(["m30"|ST],"u",Leftover) :-
-	tri(ST,"m30",Leftover).
-
-tri(["p240"|ST],"m30",Leftover) :-
-	tri(ST,"p240",Leftover).
-	
-tri([Dir|ST],Dir,Leftover) :-
-	tri(ST,Dir,Leftover).
+tri(Dir) --> [Dir],tri(Dir).
+tri("u") --> ["m30"],tri("m30").
+tri("m30") --> ["p240"],tri("p240").
+tri("p240") --> [].
 
 
 /* subLen/4 = get the length for the first occurance of a substring of repeated characters */
 
-subLen([],_,Len,_) :-
+subLen(_,Len,_,Leftover,Leftover) :-
 	Len is 0.
 
-subLen([Dir|ST],Dir,Len,_) :-
-	subLen(ST,Dir,Llen,1),
+subLen(Dir,Len,_,[Dir|ST],Leftover) :-
+	subLen(Dir,Llen,1,ST,Leftover),
 	Len is Llen+1.
 
-subLen([SH|ST],Dir,Len,0) :-
+subLen(Dir,Len,0,[SH|ST],Leftover) :-
 	SH \== Dir,
-	subLen(ST,Dir,Len,0).
+	subLen(Dir,Len,0,ST,Leftover).
 
-subLen([SH|_],Dir,Len,1) :-
+subLen(Dir,Len,1,[SH|_],_) :-
 	SH \== Dir,
 	Len is 0.
 
@@ -279,6 +246,7 @@ try_all_sqA([Case|Tail]) :-
 try_all_rctA([Case|Tail]) :-
 	rctA(Case,[]);
 	try_all_rctA(Tail).
+
 
 /* try_all_eqtriA/1
 	Succeeds if some cyclic case of the list represents a triangle
