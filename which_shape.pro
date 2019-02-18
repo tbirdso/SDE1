@@ -47,81 +47,20 @@ lA(Length) --> ["l"],{Length is 1}.
 
 sq --> uA(_),rA(_),dA(_),lA(_).
 
-/*
-sq --> [].
-sq --> {nextClockwise("u",N)},sqRecurse(_,"u",N).
-*/
-
-/* sqRecurse/5: recurse through list and make sure it represents a square */
-
-sqRecurse(Len,_,_) --> {Len is 0}.
-
-sqRecurse(Len,Cur,Next) --> 
-	(corner(Cur,Next,NewCur,NewNext),
-	 sqRecurse(Ll,NewCur,NewNext),
-	 tailIsCorrect(Ll,LH,Leftover)
-	),[].
-
-/*
-sqRecurse(Len,_,_,Leftover,Leftover) :-
-	Len is 0.
-
-sqRecurse(Len,Cur,Next,[LH|LT],Leftover) :-
-	corner(Cur,Next,LH,NewCur,NewNext),
-	sqRecurse(Ll,NewCur,NewNext,LT,Leftover),
-	tailIsCorrect(Ll,LH),
-	Len is Ll+1.	
-*/
-
-/* corner/5: if recursion encounters a corner in the square then rotate to accept the new edge */
-corner(C,N,N,N2,N,Leftover) :-
-	C \== N,
-	nextClockwise(N,N2).
-
-corner(C,N,C,N,C,Leftover).
-
-
-/* tailIsCorrect/2: make sure tail of square ends in "l" */
-tailIsCorrect(0,"l","l").
-
-tailIsCorrect(Len,_,_) :-
-	Len > 0.
-
-
-/* nextClockwise/2: return next side from a 90-degree clockwise rotation */
-nextClockwise("u","r").
-nextClockwise("r","d").
-nextClockwise("d","l").
-nextClockwise("l","u").
-
 
 /* sqA
 	Succeeds if In is a string list representing u^n r^n d^n l^n with string Leftover leftover
 
 */
 
-
-
-sqA([],[]).
-
-sqA(Str,Leftover) :-
-	sq(Str,Leftover),
-	subLen("u",SideLen,0,Str,[]),
-	subLen("r",SideLen,0,Str,[]),
-	subLen("d",SideLen,0,Str,[]),
-	subLen("l",SideLen,0,Str,[]).
+sqA --> uA(L),rA(L),dA(L),lA(L).
 
 
 /* rctA/2
 	Like sqA, but only parallel sides must have equal length
 */
 
-rctA(Str,Leftover) :-
-	sq(Str,Leftover),
-	subLen("u",UpLen,0,Str,[]),
-	subLen("r",RightLen,0,Str,[]),
-	subLen("d",UpLen,0,Str,[]),
-	subLen("l",RightLen,0,Str,[]).
+rctA --> uA(M),rA(N),dA(M),lA(N).
 
 
 /* grect/3
@@ -138,6 +77,7 @@ grect(A,B,C) :-
 
 
 gSide(_,Len,Len) --> [].
+
 gSide(Dir,Len,CurLen), [Dir] --> 
 	{GLen is CurLen+1},
 	gSide(Dir,Len,GLen).
@@ -162,37 +102,7 @@ p240A(Len) --> ["p240"],{Len is 1}.
 	Recognize equilateral triangle u^n m30^n p240^n
 */
 
-eqtriA(Str,[]) :-
-	tri("u",Str,[]),
-	subLen("u",SideLen,0,Str,[]),
-	subLen("m30",SideLen,0,Str,[]),
-	subLen("p240",SideLen,0,Str,[]).
-
-
-/* tri/3 = check whether string contains only triangle elements that are in the order u^i m30^j p240^k */
-
-tri(Dir) --> [Dir],tri(Dir).
-tri("u") --> ["m30"],tri("m30").
-tri("m30") --> ["p240"],tri("p240").
-tri("p240") --> [].
-
-
-/* subLen/4 = get the length for the first occurance of a substring of repeated characters */
-
-subLen(_,Len,_,Leftover,Leftover) :-
-	Len is 0.
-
-subLen(Dir,Len,_,[Dir|ST],Leftover) :-
-	subLen(Dir,Llen,1,ST,Leftover),
-	Len is Llen+1.
-
-subLen(Dir,Len,0,[SH|ST],Leftover) :-
-	SH \== Dir,
-	subLen(Dir,Len,0,ST,Leftover).
-
-subLen(Dir,Len,1,[SH|_],_) :-
-	SH \== Dir,
-	Len is 0.
+eqtriA --> uA(N),m30A(N),p240A(N).
 
 
 /* one_shift/2
@@ -247,7 +157,7 @@ all_cases(A,R) :-
 */
 
 try_all_sqA([Case|Tail]) :-
-	sqA(Case,[]);
+	sqA(Case,[]),write("cyclic shift: "),writeq(Case),write(" is a square.");
 	try_all_sqA(Tail).
 
 
@@ -256,7 +166,7 @@ try_all_sqA([Case|Tail]) :-
 */
 
 try_all_rctA([Case|Tail]) :-
-	rctA(Case,[]);
+	rctA(Case,[]),write("cyclic shift: "),writeq(Case),write(" is a rectangle.");
 	try_all_rctA(Tail).
 
 
@@ -265,7 +175,7 @@ try_all_rctA([Case|Tail]) :-
 */
 
 try_all_eqtriA([Case|Tail]) :-
-	eqtriA(Case,[]);
+	eqtriA(Case,[]),write("cyclic shift: "),writeq(Case),write(" is a triangle.");
 	try_all_eqtriA(Tail).
 
 
