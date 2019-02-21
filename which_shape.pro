@@ -15,7 +15,7 @@
 	Leftovers
 */
 
-uA(Length) --> ["u"],uA(Ll),{Length is Ll+1}.
+uA(Length) --> ["u"],uA(Ll),!,{Length is Ll+1}.
 uA(Length) --> ["u"],{Length is 1}.
 
 
@@ -23,21 +23,21 @@ uA(Length) --> ["u"],{Length is 1}.
 	Parse string for sequence of "r" and if succeeds indicates length
 */
 
-rA(Length) --> ["r"],rA(Ll),{Length is Ll+1}.
+rA(Length) --> ["r"],rA(Ll),!,{Length is Ll+1}.
 rA(Length) --> ["r"],{Length is 1}.
 
 /* dA
 	Parse string for sequence of "d" and if succeeds indicates length
 */
 
-dA(Length) --> ["d"],dA(Ll),{Length is Ll+1}.
+dA(Length) --> ["d"],dA(Ll),!,{Length is Ll+1}.
 dA(Length) --> ["d"],{Length is 1}.
 
 /* lA
 	Parse string for sequence of "l" and if succeeds indicates length
 */
 
-lA(Length) --> ["l"],lA(Ll),{Length is Ll+1}.
+lA(Length) --> ["l"],lA(Ll),!,{Length is Ll+1}.
 lA(Length) --> ["l"],{Length is 1}.
 
 
@@ -73,7 +73,8 @@ grect(A,B,C) :-
 	gSide("l",B,0,[],S1),
 	gSide("d",A,0,S1,S2),
 	gSide("r",B,0,S2,S3),
-	gSide("u",A,0,S3,C).
+	gSide("u",A,0,S3,C),
+	!.
 
 
 gSide(_,Len,Len) --> [].
@@ -86,7 +87,7 @@ gSide(Dir,Len,CurLen), [Dir] -->
 	Like uA but with m30
 */
 
-m30A(Len) --> ["m30"],m30A(Ll),{Len is Ll+1}.
+m30A(Len) --> ["m30"],m30A(Ll),!,{Len is Ll+1}.
 m30A(Len) --> ["m30"],{Len is 1}.
 
 
@@ -94,7 +95,7 @@ m30A(Len) --> ["m30"],{Len is 1}.
 	Like uA but with p240
 */
 
-p240A(Len) --> ["p240"],p240A(Ll),{Len is Ll+1}.
+p240A(Len) --> ["p240"],p240A(Ll),!,{Len is Ll+1}.
 p240A(Len) --> ["p240"],{Len is 1}.
 
 
@@ -113,7 +114,8 @@ one_shift([A],[A]).
 
 one_shift([FA,FB|FT],Out) :-
 	one_shift([FA|FT],L),
-	Out = [FB|L].
+	Out = [FB|L],
+	!.
 
 
 /* all_shifts/4
@@ -157,7 +159,7 @@ all_cases(A,R) :-
 */
 
 try_all_sqA([Case|Tail]) :-
-	sqA(Case,[]),write("cyclic shift: "),writeq(Case),write(" is a square.");
+	sqA(Case,[]),write("cyclic shift: "),writeq(Case),write(" is a square."),!;
 	try_all_sqA(Tail).
 
 
@@ -166,7 +168,7 @@ try_all_sqA([Case|Tail]) :-
 */
 
 try_all_rctA([Case|Tail]) :-
-	rctA(Case,[]),write("cyclic shift: "),writeq(Case),write(" is a rectangle.");
+	rctA(Case,[]),write("cyclic shift: "),writeq(Case),write(" is a rectangle."),!;
 	try_all_rctA(Tail).
 
 
@@ -175,7 +177,7 @@ try_all_rctA([Case|Tail]) :-
 */
 
 try_all_eqtriA([Case|Tail]) :-
-	eqtriA(Case,[]),write("cyclic shift: "),writeq(Case),write(" is a triangle.");
+	eqtriA(Case,[]),write("cyclic shift: "),writeq(Case),write(" is a triangle."),!;
 	try_all_eqtriA(Tail).
 
 
