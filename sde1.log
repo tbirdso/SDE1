@@ -173,17 +173,6 @@ eqtriA(["u","u","u","m30","m30","m30","p240","p240","p240"],[]).
 one_shift(["u","r","d","l"],Out).
 
 
-Out = ["r", "d", "l", "u"] ;[1m;[0m
-[1;31mfalse.[0m
-
-consult("which_shape.pro").
-
-
-[1mtrue.[0m
-
-one_shift(["u","r","d","l"],Out).
-
-
 Out = ["r", "d", "l", "u"].
 
 one_shift(["5","4","3","2","1"],Out).
@@ -191,27 +180,12 @@ one_shift(["5","4","3","2","1"],Out).
 
 Out = ["4", "3", "2", "1", "5"].
 
-one_shift["u","r","d","l"],W),one_shift(W,A),one_shift(A,B).
-
-
-[31;1mERROR: Syntax error: Operator expected
-ERROR: one_shif
-ERROR: ** here **
-ERROR: t["u","r","d","l"],W),one_shift(W,A),one_shift(A,B) . 
 [0mone_shift(["u","r","d","l"],W),one_shift(W,A),one_shift(A,B).
 
 
 W = ["r", "d", "l", "u"],
 A = ["d", "l", "u", "r"],
 B = ["l", "u", "r", "d"].
-
-all_shifts(["u","r","d","l"],4,1).
-
-
-[31;1mERROR: Undefined procedure: all_shifts/3
-ERROR:     However, there are definitions for:
-ERROR:         all_shifts/4
-[0m[1;31mfalse.[0m
 
 all_shifts(["u","r","d","l"],R,4,1).
 
@@ -257,18 +231,6 @@ all_cases([],R).
 
 
 [1;31mfalse.[0m
-
-all_cases(["l","u","r","d"],R),try_all_sqA(R).
-
-
-cyclic shift: ["u","r","d","l"] is a square.
-R = [["l", "u", "r", "d"], ["u", "r", "d", "l"], ["r", "d", "l", "u"], ["d", "l", "u", "r"]] ;[1m;[0m
-[1;31mfalse.[0m
-
-consult("which_shape.pro").
-
-
-[1mtrue.[0m
 
 all_cases(["l","u","r","d"],R),try_all_sqA(R).
 
