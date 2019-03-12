@@ -1,0 +1,226 @@
+Evaluating SDE1
+
+Prolog Source File Consulted
+Noting Warnings and Errors
+Consulting Datafile
+Consulting Testcases--
+
+===============>>>> current goal: goal1
+
+goal1 :-
+	uA(A, ["u", "u", "u"], []),
+	write(A).
+
+3
+goal: goal1  ** succeeded ** 
+
+
+
+===============>>>> current goal: goal2
+
+goal2 :-
+	uA(A, ["u", "u", "d"], []),
+	write(A).
+
+
+goal: goal2  ** failed **
+
+
+
+===============>>>> current goal: goal3
+
+goal3 :-
+	sq(["u", "u", "d", "l"], []).
+
+
+goal: goal3  ** failed **
+
+
+
+===============>>>> current goal: goal4
+
+goal4 :-
+	sqA(["u", "r", "d", "l"], []).
+
+
+goal: goal4  ** succeeded ** 
+
+
+
+===============>>>> current goal: goal5
+
+goal5 :-
+	sqA(["u", "u", "r", "d", "l"], []).
+
+
+goal: goal5  ** failed **
+
+
+
+===============>>>> current goal: goal6
+
+goal6 :-
+	sqA(["u", "u", "r", "r", "d", "d", "l", "l"], []).
+
+
+goal: goal6  ** succeeded ** 
+
+
+
+===============>>>> current goal: goal7
+
+goal7 :-
+	rctA(["u", "u", "r", "r", "r", "d", "d", "l", "l"], []).
+
+
+goal: goal7  ** failed **
+
+
+
+===============>>>> current goal: goal8
+
+goal8 :-
+	rctA(["u", "u", "u", "r", "r", "d", "d", "d", "l", "l"], []).
+
+
+goal: goal8  ** succeeded ** 
+
+
+
+===============>>>> current goal: goal9
+
+goal9 :-
+	eqtriA(["u", "m30", "p240"], []).
+
+
+goal: goal9  ** succeeded ** 
+
+
+
+===============>>>> current goal: goal10
+
+goal10 :-
+	eqtriA(["m30", "p240", "u"], []).
+
+
+goal: goal10  ** failed **
+
+
+
+===============>>>> current goal: goal11
+
+goal11 :-
+	one_shift(["r", "d", "l", "u"], A),
+	write(A).
+
+[d,l,u,r]
+goal: goal11  ** succeeded ** 
+
+
+
+===============>>>> current goal: goal12
+
+goal12 :-
+	start_shifts(["r", "d", "l", "u"], A),
+	write(A).
+
+[[d,l,u,r],[l,u,r,d],[u,r,d,l]]
+goal: goal12  ** succeeded ** 
+
+
+
+===============>>>> current goal: goal13
+
+goal13 :-
+	all_cases(["u", "r", "d", "l"], A),
+	write(A).
+
+[[u,r,d,l],[r,d,l,u],[d,l,u,r],[l,u,r,d]]
+goal: goal13  ** succeeded ** 
+
+
+
+===============>>>> current goal: goal14
+
+goal14 :-
+	all_cases(["u", "u", "u", "r", "r", "d", "d", "d", "l", "l"], A),
+	writeq(A).
+
+[["u","u","u","r","r","d","d","d","l","l"],["u","u","r","r","d","d","d","l","l","u"],["u","r","r","d","d","d","l","l","u","u"],["r","r","d","d","d","l","l","u","u","u"],["r","d","d","d","l","l","u","u","u","r"],["d","d","d","l","l","u","u","u","r","r"],["d","d","l","l","u","u","u","r","r","d"],["d","l","l","u","u","u","r","r","d","d"],["l","l","u","u","u","r","r","d","d","d"],["l","u","u","u","r","r","d","d","d","l"]]
+goal: goal14  ** succeeded ** 
+
+
+
+===============>>>> current goal: goal15
+
+goal15 :-
+	grect(5, 2, A),
+	writeq(A).
+
+["u","u","u","u","u","r","r","d","d","d","d","d","l","l"]
+goal: goal15  ** succeeded ** 
+
+
+
+===============>>>> current goal: goal16
+
+goal16 :-
+	grect(2, 10, A),
+	writeq(A).
+
+["u","u","r","r","r","r","r","r","r","r","r","r","d","d","l","l","l","l","l","l","l","l","l","l"]
+goal: goal16  ** succeeded ** 
+
+
+
+===============>>>> current goal: goal17
+
+goal17 :-
+	mall_cases(["u", "r", "r", "d", "d", "l", "l", "u"], A),
+	try_all_sqA(A).
+
+
+cyclic shift: ["u","u","r","r","d","d","l","l"] is a square
+
+goal: goal17  ** succeeded ** 
+
+
+
+===============>>>> current goal: goal18
+
+goal18 :-
+	mall_cases(["u", "u", "u", "r", "r", "d", "d", "d", "l", "l"], A),
+	try_all_sqA(A).
+
+
+goal: goal18  ** failed **
+
+
+
+===============>>>> current goal: goal19
+
+goal19 :-
+	all_cases(["p240", "p240", "u", "u", "u", "m30", "m30", "m30", "p240"], A),
+	try_all_eqtriA(A).
+
+
+cyclic shift: ["u","u","u","m30","m30","m30","p240","p240","p240"] is an equilateral triangle
+
+goal: goal19  ** succeeded ** 
+
+
+
+===============>>>> current goal: goal20
+
+goal20 :-
+	mall_cases(["d", "d", "d", "d", "l", "l", "u", "u", "u", "u", "r", "r"], A),
+	try_all_rctA(A).
+
+
+cyclic shift: ["u","u","u","u","r","r","d","d","d","d","l","l"] is a rectangle
+
+goal: goal20  ** succeeded ** 
+
+
+
+Thats All Folks
